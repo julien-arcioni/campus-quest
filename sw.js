@@ -1,7 +1,23 @@
+const cacheName = 'my-cache-v1';
+
 self.addEventListener('install', (event) => {
     event.waitUntil(
-        caches.open('my-cache').then((cache) => {
+        caches.open(cacheName).then((cache) => {
             return cache.addAll(['/']);
+        })
+    );
+});
+
+self.addEventListener('activate', (event) => {
+    event.waitUntil(
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames.map((existingCacheName) => {
+                    if (existingCacheName !== cacheName) {
+                        return caches.delete(existingCacheName);
+                    }
+                })
+            );
         })
     );
 });
