@@ -1,3 +1,4 @@
+import { ClerkProvider } from '@clerk/nextjs'
 import { Inter } from 'next/font/google'
 import Head from 'next/head'
 import './globals.css'
@@ -12,12 +13,14 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
+      <ClerkProvider>
       <html lang="fr">
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
       </Head>
       <body className={inter.className}>{children}</body>
       </html>
+      </ClerkProvider>
   )
 }
 

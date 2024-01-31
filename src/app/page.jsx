@@ -7,8 +7,6 @@ export default function Home() {
         <main className="min-h-screen">
             <Header/>
             <Testimonial/>
-            <a rel="noopener noreferrer" href="/login"
-               className="flex items-center px-4">Se connecter</a>
         </main>
     )
 }
