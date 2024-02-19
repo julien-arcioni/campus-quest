@@ -6,7 +6,7 @@ const Header = () => {
     const { isLoaded, isSignedIn, user } = useUser();
     return (
         <header className="p-4 dark:bg-gray-800 dark:text-gray-100 w-full">
-            <div className="container flex justify-between h-16 mx-auto">
+            <div className="container flex justify-between items-center h-16 mx-auto">
                 <a rel="noopener noreferrer" href="#" aria-label="Back to homepage" className="flex items-center p-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 32 32"
                          className="w-8 h-8 dark:text-violet-400">
@@ -16,46 +16,26 @@ const Header = () => {
                             d="M22.094 19.451h-0.758c-0.188 0-0.363 0.049-0.515 0.135l0.006-0.004-4.574 2.512-5.282-3.049v-6.082l5.282-3.051 4.576 2.504c0.146 0.082 0.323 0.131 0.508 0.131h0.758c0.293 0 0.529-0.239 0.529-0.531v-0.716c0-0.2-0.11-0.373-0.271-0.463l-0.004-0.002-5.078-2.777c-0.293-0.164-0.645-0.26-1.015-0.26-0.39 0-0.756 0.106-1.070 0.289l0.010-0.006-5.281 3.049c-0.636 0.375-1.056 1.055-1.059 1.834v6.082c0 0.779 0.422 1.461 1.049 1.828l0.009 0.006 5.281 3.049c0.305 0.178 0.67 0.284 1.061 0.284 0.373 0 0.723-0.098 1.027-0.265l-0.012 0.006 5.080-2.787c0.166-0.091 0.276-0.265 0.276-0.465v-0.716c0-0.293-0.238-0.529-0.529-0.529z"></path>
                     </svg>
                 </a>
-                <ul className="items-stretch hidden space-x-3 lg:flex">
-                    <li className="flex">
-                        <a rel="noopener noreferrer" href="#"
-                           className="flex items-center px-4 -mb-1 border-b-2 dark:border-transparent dark:text-violet-400 dark:border-violet-400">Link</a>
-                    </li>
-                    <li className="flex">
-                        <a rel="noopener noreferrer" href="#"
-                           className="flex items-center px-4 -mb-1 border-b-2 dark:border-transparent">Link</a>
-                    </li>
-                    <li className="flex">
-                        <a rel="noopener noreferrer" href="#"
-                           className="flex items-center px-4 -mb-1 border-b-2 dark:border-transparent">Link</a>
-                    </li>
-                    <li className="flex">
-                        <a rel="noopener noreferrer" href="#"
-                           className="flex items-center px-4 -mb-1 border-b-2 dark:border-transparent">Link</a>
-                    </li>
-                </ul>
-                <div className="items-center flex-shrink-0 hidden lg:flex">
-                    {isSignedIn ? (
+
+                <div className="items-center flex-shrink-0 lg:flex">
+                    {isSignedIn && isLoaded && (
                         <UserButton afterSignOutUrl="/"/>
-                    ) : (
-                        <a href="/login">
-                            <button className="self-center px-8 py-3 rounded">Connexion</button>
-                        </a>
+                    )}
+
+                    {!isSignedIn && isLoaded && (
+                        <button className="p-4 lg:hidden" onClick={() => window.location.href = "/login"}>
+                            <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M12 0c6.623 0 12 5.377 12 12s-5.377 12-12 12-12-5.377-12-12 5.377-12 12-12zm8.127 19.41c-.282-.401-.772-.654-1.624-.85-3.848-.906-4.097-1.501-4.352-2.059-.259-.565-.19-1.23.205-1.977 1.726-3.257 2.09-6.024 1.027-7.79-.674-1.119-1.875-1.734-3.383-1.734-1.521 0-2.732.626-3.409 1.763-1.066 1.789-.693 4.544 1.049 7.757.402.742.476 1.406.22 1.974-.265.586-.611 1.19-4.365 2.066-.852.196-1.342.449-1.623.848 2.012 2.207 4.91 3.592 8.128 3.592s6.115-1.385 8.127-3.59zm.65-.782c1.395-1.844 2.223-4.14 2.223-6.628 0-6.071-4.929-11-11-11s-11 4.929-11 11c0 2.487.827 4.783 2.222 6.626.409-.452 1.049-.81 2.049-1.041 2.025-.462 3.376-.836 3.678-1.502.122-.272.061-.628-.188-1.087-1.917-3.535-2.282-6.641-1.03-8.745.853-1.431 2.408-2.251 4.269-2.251 1.845 0 3.391.808 4.24 2.218 1.251 2.079.896 5.195-1 8.774-.245.463-.304.821-.179 1.094.305.668 1.644 1.038 3.667 1.499 1 .23 1.64.59 2.049 1.043z"/>
+                            </svg>
+                        </button>
                     )}
 
                 </div>
-                <button className="p-4 lg:hidden">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                         className="w-6 h-6 dark:text-gray-100">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                              d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
+
+
             </div>
         </header>
-
-
-
     );
 };
 
