@@ -31,6 +31,12 @@ const Header = () => {
                         </button>
                     )}
 
+                    {!isSignedIn && isLoaded && (
+                        <a rel="noopener noreferrer" href="/login"
+                           className="hidden lg:flex items-center px-4">Se connecter</a>
+                    )}
+
+
                 </div>
 
 
