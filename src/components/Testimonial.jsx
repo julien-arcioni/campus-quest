@@ -1,68 +1,158 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import QrReader from 'modern-react-qr-reader';
+import {useGeolocated} from "react-geolocated";
 
 const Testimonial = () => {
+    const [quests, setQuests] = useState([]);
+    const [showQrReader, setShowQrReader] = useState(false);
+    const [selectedQuest, setSelectedQuest] = useState(null);
+
+    useEffect(() => {
+        fetch('/api/quests')
+            .then(response => response.json())
+            .then(data => setQuests(data));
+    }, []);
+
+    const handleCardClick = (quest) => {
+        setSelectedQuest(quest);
+        setShowQrReader(true);
+    };
+
+    const handleScan = data => {
+        if (data) {
+            if (data === selectedQuest.code) {
+                return "Code valide";
+            } else {
+                return "Code invalide";
+            }
+        }
+    }
+
+    // const validateQuest = (questId) => {
+    //     fetch(`/api/quests/${questId}/validate`, {
+    //         method: 'POST',
+    //     })
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             // Handle the response from the server
+    //         });
+    // }
+
+    const [result, setResult] = useState(null);
+
+    const campusPosition = {
+        // latitude: 49.20091715716765,
+        // longitude: -0.3499711869506036
+        latitude: 49.177989,
+        longitude: -0.389227
+    };
+
+    const positionOptions = {
+        enableHighAccuracy: true,
+        timeout: 10000
+    };
+
+    const {coords, isGeolocationAvailable, isGeolocationEnabled} = useGeolocated(positionOptions);
+    const distanceThreshold = 1000; // en mètres
+
+    const deg2rad = (deg) => {
+        return deg * Math.PI / 180;
+    }
+
+    const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
+        const R = 6371e3; // Rayon de la terre en mètres
+        const dLat = deg2rad(lat2 - lat1);
+        const dLon = deg2rad(lon2 - lon1);
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2)
+        ;
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const d = R * c; // Distance en mètres
+        return d;
+    }
+
+    const renderMessage = () => {
+        if (!isGeolocationAvailable) {
+            // return <p>Votre navigateur ne supporte pas la géolocalisation</p>;
+            return -1;
+        } else if (!isGeolocationEnabled) {
+            // return <p>La géolocalisation n'est pas activée</p>;
+            return -1;
+        } else if (coords) {
+            const distance = getDistanceFromLatLonInKm(campusPosition.latitude, campusPosition.longitude, coords.latitude, coords.longitude);
+            if (distance <= distanceThreshold) {
+                // return <p>Vous êtes sur le campus</p>;
+                return 1;
+            } else {
+                // return <p>Vous êtes à {distance} mètres du campus</p>;
+                return 0;
+            }
+        } else {
+            // return <p>En attente des données de géolocalisation…</p>;
+            return -1;
+        }
+    }
+
+    // const handleScan = data => {
+    //     if (data) {
+    //         setResult(data);
+    //     }
+    // }
+
+    const handleError = err => {
+        console.error(err)
+    }
+
+    const [hydrated, setHydrated] = useState(false);
+
+    useEffect(() => {
+        setHydrated(true);
+    }, []);
+
+    if (!hydrated) {
+        return null;
+    }
+
     return (
         <section className="dark:bg-gray-800 dark:text-gray-100">
-            <main className="container mx-auto mt-10">
-                <section className="mb-10 text-center">
-                    <h2 className="text-2xl font-bold">C'est parti !</h2>
-                    <p>Connecte-toi ou crée un compte pour commencer ton aventure.</p>
-                </section>
-
-                <section className="py-6 sm:py-12 dark:bg-gray-800 dark:text-gray-100">
-                    <div className="container p-6 mx-auto space-y-8 flex flex-col align-center">
-                        <div className="space-y-2 text-center">
-                            <h2 className="text-3xl font-bold">Fonctionnalités de Campus Quest</h2>
-                        </div>
-                        <div className="grid grid-cols-1 gap-x-3 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
-                            <article className="flex flex-col dark:bg-gray-900">
-                                <a rel="noopener noreferrer" href="#"
-                                   aria-label="Te nulla oportere reprimique his dolorum">
-                                    <img alt="" className="object-cover w-full h-52 dark:bg-gray-500"
-                                         src="https://source.unsplash.com/200x200/?fashion?1"/>
-                                </a>
-                                <div className="flex flex-col flex-1 p-6">
-                                    <a rel="noopener noreferrer" href="#"
-                                       aria-label="Te nulla oportere reprimique his dolorum"></a>
-                                    <h3 className="flex-1 py-2 text-lg font-semibold leadi">Remplis des quêtes</h3>
-                                </div>
-                            </article>
-                            <article className="flex flex-col dark:bg-gray-900">
-                                <a rel="noopener noreferrer" href="#"
-                                   aria-label="Te nulla oportere reprimique his dolorum">
-                                    <img alt="" className="object-cover w-full h-52 dark:bg-gray-500"
-                                         src="https://source.unsplash.com/200x200/?fashion?2"/>
-                                </a>
-                                <div className="flex flex-col flex-1 p-6">
-                                    <a rel="noopener noreferrer" href="#"
-                                       aria-label="Te nulla oportere reprimique his dolorum"></a>
-                                    <h3 className="flex-1 py-2 text-lg font-semibold leadi">Suivi de ton avancement</h3>
-                                </div>
-                            </article>
-                            <article className="flex flex-col dark:bg-gray-900">
-                                <a rel="noopener noreferrer" href="#"
-                                   aria-label="Te nulla oportere reprimique his dolorum">
-                                    <img alt="" className="object-cover w-full h-52 dark:bg-gray-500"
-                                         src="https://source.unsplash.com/200x200/?fashion?3"/>
-                                </a>
-                                <div className="flex flex-col flex-1 p-6">
-                                    <a rel="noopener noreferrer" href="#"
-                                       aria-label="Te nulla oportere reprimique his dolorum"></a>
-                                    <h3 className="flex-1 py-2 text-lg font-semibold leadi">Une expérience immersive</h3>
-                                </div>
-                            </article>
+            <main className="container mx-auto mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {quests.map((quest, index) => (
+                    <div key={index} className="max-w-xs rounded-md shadow-md dark:bg-gray-900 dark:text-gray-100"
+                         onClick={handleCardClick}>
+                        <div className="flex flex-col justify-between p-6 space-y-8">
+                            <div className="space-y-2">
+                                <h2 className="text-3xl font-semibold tracki">{quest.title}</h2>
+                                <p className="dark:text-gray-100">{quest.description}</p>
+                            </div>
+                            <button type="button"
+                                    className="flex items-center justify-center w-full p-3 font-semibold tracki rounded-md dark:bg-violet-400 dark:text-gray-900">Compléter la quête
+                            </button>
                         </div>
                     </div>
-                </section>
-
-                <section className="flex items-center flex-col">
-                    <p>Prêt à relever le défi ? Commence ton exploration dès aujourd'hui !</p>
-                    <a href="/privatearea"
-                       className="bg-blue-500 hover:bg-blue-700 text-white p-3 rounded-md mt-4">Commencer</a>
-
-                    <a href="/quest"
-                       className="bg-blue-500 hover:bg-blue-700 text-white p-3 rounded-md mt-4">Me géolocaliser</a>
-                </section>
+                ))}
+                {showQrReader && (
+                    <div className="fixed inset-0 flex items-center justify-center z-50 w-1/2 translate-x-1/2">
+                        <div className="absolute inset-0 bg-transparent"></div>
+                        <div className="mx-auto w-1/2">
+                            {renderMessage() === 1 ? (
+                                <QrReader
+                                    delay={300}
+                                    facingMode={"environment"}
+                                    onError={handleError}
+                                    onScan={handleScan}
+                                    style={{width: '100%'}}
+                                />
+                            ) : renderMessage() === 0 ? (
+                                <p className="text-amber-600">Vous êtes à plus de {distanceThreshold} mètres du campus</p>
+                            ) : (
+                                <p>Géolocalisation non disponible ou pas activée</p>
+                            )}
+                            <p className="text-white">{result}</p>
+                        </div>
+                    </div>
+                )}
             </main>
         </section>
     );
