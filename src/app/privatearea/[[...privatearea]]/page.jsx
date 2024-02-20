@@ -87,22 +87,22 @@ const QRCodeReaderPage = () => {
     return (
         <main className="min-h-screen">
             <Header/>
-            <div className="mx-auto w-1/6">
-                {renderMessage() === 1 ? (
-                    <QrReader
-                    delay={300}
-                    facingMode={"environment"}
-                    onError={handleError}
-                    onScan={handleScan}
-                    style={{width: '100%'}}
-                />
-                ) : renderMessage() === 0 ? (
-                <p>Vous êtes à plus de {distanceThreshold} mètres du campus</p>
-                ) : (
-                <p>Géolocalisation non disponible ou pas activée</p>
-                )}
-                <p>{result}</p>
-            </div>
+            {/*<div className="mx-auto w-1/6">*/}
+            {/*    {renderMessage() === 1 ? (*/}
+            {/*        <QrReader*/}
+            {/*        delay={300}*/}
+            {/*        facingMode={"environment"}*/}
+            {/*        onError={handleError}*/}
+            {/*        onScan={handleScan}*/}
+            {/*        style={{width: '100%'}}*/}
+            {/*    />*/}
+            {/*    ) : renderMessage() === 0 ? (*/}
+            {/*    <p>Vous êtes à plus de {distanceThreshold} mètres du campus</p>*/}
+            {/*    ) : (*/}
+            {/*    <p>Géolocalisation non disponible ou pas activée</p>*/}
+            {/*    )}*/}
+            {/*    <p>{result}</p>*/}
+            {/*</div>*/}
             <div className="data-bdd">
                 <Testimonial/>
             </div>
