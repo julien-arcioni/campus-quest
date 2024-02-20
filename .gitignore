@@ -1,1 +1,5 @@
 .env.local
+.env.development.local
+.vercel/
+.next/
+.node_modules/
