@@ -1,17 +1,37 @@
 "use client"
 import React, {useState} from 'react';
 import Header from "@/components/Header";
+import QrReader from 'modern-react-qr-reader'
 
 const QRCodeReaderPage = () => {
+
+    const [result, setResult] = useState('No result');
+
+    const handleScan = data => {
+        if (data) {
+            setResult(data);
+        }
+    }
+
+    const handleError = err => {
+        console.error(err)
+    }
+
     return (
         <main className="min-h-screen">
             <Header/>
-            <div className="mx-auto w-1/6">
-                <h1>QR Code Reader</h1>
+            <div>
+                <QrReader
+                    delay={300}
+                    facingMode={"environment"}
+                    onError={handleError}
+                    onScan={handleScan}
+                    style={{width: '30%'}}
+                />
+                <p>{result}</p>
             </div>
         </main>
-     );
-
+    );
 }
 
 export default QRCodeReaderPage;

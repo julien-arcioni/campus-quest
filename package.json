@@ -12,6 +12,7 @@
     "@clerk/nextjs": "^4.29.5",
     "@ducanh2912/next-pwa": "^10.2.2",
     "@vercel/postgres": "^0.7.2",
+    "modern-react-qr-reader": "^1.0.12",
     "next": "14.0.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
