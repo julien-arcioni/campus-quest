@@ -26,7 +26,7 @@ const QRCodeReaderPage = () => {
                     facingMode={"environment"}
                     onError={handleError}
                     onScan={handleScan}
-                    style={{width: '30%'}}
+                    style={{width: '100%'}}
                 />
                 <p>{result}</p>
             </div>

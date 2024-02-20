@@ -4,7 +4,7 @@ const Testimonial = () => {
     return (
         <section className="dark:bg-gray-800 dark:text-gray-100">
             <main className="container mx-auto mt-10">
-                <section className="mb-10">
+                <section className="mb-10 text-center">
                     <h2 className="text-2xl font-bold">C'est parti !</h2>
                     <p>Connecte-toi ou crée un compte pour commencer ton aventure.</p>
                 </section>
