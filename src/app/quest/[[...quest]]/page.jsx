@@ -1,9 +1,9 @@
 "use client"
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Header from "@/components/Header";
 import { useGeolocated } from "react-geolocated";
 
-const QRCodeReaderPage = () => {
+const Geoloc = () => {
     // utiliser le hook useGeolocated pour obtenir les données de géolocalisation
     const { coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({
         positionOptions: {
@@ -11,6 +11,16 @@ const QRCodeReaderPage = () => {
         },
         userDecisionTimeout: 5000,
     });
+
+    const [hydrated, setHydrated] = useState(false);
+
+    useEffect(() => {
+        setHydrated(true);
+    }, []);
+
+    if (!hydrated) {
+        return null;
+    }
 
     const renderMessage = () => {
         if (!isGeolocationAvailable) {
@@ -39,4 +49,4 @@ const QRCodeReaderPage = () => {
     );
 
 }
-export default QRCodeReaderPage;
+export default Geoloc;
