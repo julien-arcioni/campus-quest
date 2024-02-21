@@ -1,11 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import QrReader from 'modern-react-qr-reader';
 import {useGeolocated} from "react-geolocated";
+import Modal from 'react-modal';
 
 const Testimonial = () => {
     const [quests, setQuests] = useState([]);
     const [showQrReader, setShowQrReader] = useState(false);
     const [selectedQuest, setSelectedQuest] = useState(null);
+
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
 
     useEffect(() => {
         fetch('/api/quests')
@@ -20,12 +24,20 @@ const Testimonial = () => {
 
     const handleScan = data => {
         if (data) {
+            console.log(data);
+            console.log(selectedQuest.code);
             if (data === selectedQuest.code) {
-                return "Code valide";
+                setModalMessage("Code valide");
+                setModalIsOpen(true);
             } else {
-                return "Code invalide";
+                setModalMessage("Code invalide");
+                setModalIsOpen(true);
             }
         }
+    }
+
+    const closeModal = () => {
+        setModalIsOpen(false);
     }
 
     // const validateQuest = (questId) => {
@@ -43,8 +55,8 @@ const Testimonial = () => {
     const campusPosition = {
         // latitude: 49.20091715716765,
         // longitude: -0.3499711869506036
-        latitude: 49.177989,
-        longitude: -0.389227
+        latitude: 49.200834747727214,
+        longitude: -0.35030825744906413
     };
 
     const positionOptions = {
@@ -116,11 +128,11 @@ const Testimonial = () => {
     }
 
     return (
-        <section className="dark:bg-gray-800 dark:text-gray-100">
+        <section className="dark:bg-gray-800 dark:text-gray-100 text-center">
             <main className="container mx-auto mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {quests.map((quest, index) => (
                     <div key={index} className="max-w-xs rounded-md shadow-md dark:bg-gray-900 dark:text-gray-100"
-                         onClick={handleCardClick}>
+                         onClick={() => handleCardClick(quest)}>
                         <div className="flex flex-col justify-between p-6 space-y-8">
                             <div className="space-y-2">
                                 <h2 className="text-3xl font-semibold tracki">{quest.title}</h2>
@@ -154,6 +166,14 @@ const Testimonial = () => {
                     </div>
                 )}
             </main>
+            <Modal
+                isOpen={modalIsOpen}
+                onRequestClose={closeModal}
+                contentLabel="Message Modal"
+            >
+                <h2>{modalMessage}</h2>
+                <button onClick={closeModal}>Fermer</button>
+            </Modal>
         </section>
     );
 };
