@@ -147,7 +147,7 @@ const Testimonial = () => {
                 {showQrReader && (
                     <div className="fixed inset-0 flex items-center justify-center z-50 w-1/2 translate-x-1/2">
                         <div className="absolute inset-0 bg-transparent"></div>
-                        <div className="mx-auto w-1/2">
+                        <div className="mx-auto w-full md:w-1/2">
                             {renderMessage() === 1 ? (
                                 <QrReader
                                     delay={300}
