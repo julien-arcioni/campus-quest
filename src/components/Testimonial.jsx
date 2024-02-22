@@ -34,17 +34,12 @@ const Testimonial = () => {
     const userId = user ? user.id : null;
 
     // Modal
-    // const [modalIsOpen, setModalIsOpen] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
+    const [modalTextButton, setModalTextButton] = useState('');
     const [modalIsOpen, setIsOpen] = React.useState(false);
 
     function openModal() {
         setIsOpen(true);
-    }
-
-    function afterOpenModal() {
-        // references are now sync'd and can be accessed.
-        // subtitle.style.color = '#f00';
     }
 
     function closeModal() {
@@ -96,20 +91,24 @@ const Testimonial = () => {
                         if (data === 1) {
                             setShowQrReader(false);
                             setModalMessage('Quête validée avec succès !');
+                            setModalTextButton('Je continue mes quêtes');
                             openModal();
                         } else if (data === 0) {
                             setShowQrReader(false);
                             setModalMessage('Oupps vous avez déjà validé cette quête !');
+                            setModalTextButton('Je valide une quête différente');
                             openModal();
                         } else if (data === -1) {
                             setShowQrReader(false);
                             setModalMessage('Aïe ! Une erreur est survenue. Veuillez réessayer plus tard.');
+                            setModalTextButton('Je réessaye')
                             openModal();
                         }
                     });
             } else {
                 setShowQrReader(false);
                 setModalMessage('Code invalide !');
+                setModalTextButton('Je vérifie mon QR code')
                 openModal();
             }
         }
@@ -183,8 +182,8 @@ const Testimonial = () => {
                          onClick={() => handleCardClick(quest)}>
                         <div className="flex flex-col justify-between p-6 space-y-8">
                             <div className="space-y-2">
-                                <h2 className="text-3xl font-semibold tracki">{quest.title}</h2>
-                                <p className="dark:text-gray-100">{quest.description}</p>
+                                <p className="">Quête 1</p>
+                                <p className="dark:text-gray-100 text-xl">{quest.description}</p>
                             </div>
                             <button type="button"
                                     className="flex items-center justify-center w-full p-3 font-semibold tracki rounded-md dark:bg-violet-400 dark:text-gray-900">Compléter
@@ -206,8 +205,7 @@ const Testimonial = () => {
                                     style={{width: '100%'}}
                                 />
                             ) : renderMessage() === 0 ? (
-                                <p className="text-amber-600">Vous êtes à plus de {distanceThreshold} mètres du
-                                    campus</p>
+                                <p className="text-amber-600">Vous êtes à plus de {distanceThreshold} mètres du campus</p>
                             ) : (
                                 <p>Géolocalisation non disponible ou pas activée</p>
                             )}
@@ -218,31 +216,23 @@ const Testimonial = () => {
             </main>
             <Modal
                 isOpen={modalIsOpen}
-                onAfterOpen={afterOpenModal}
                 onRequestClose={closeModal}
                 style={customStyles}
                 contentLabel={modalMessage}
+                contentButton={modalTextButton}
             >
                 <div className="flex flex-col justify-between items-center p-10">
                     <div className="absolute top-2.5 right-3">
-                        <button onClick={closeModal}>X</button>
+                        <button className="dark:bg-violet-400 dark:text-gray-900" onClick={closeModal}>X</button>
                     </div>
                     <div className="mt-4">
                         <h2>{modalMessage}</h2>
                     </div>
                     <div className="mt-4">
-                        <button className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded" onClick={closeModal}>Je valide une autre quête</button>
+                        <button className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded dark:bg-violet-400 dark:text-gray-900" onClick={closeModal}>{modalTextButton}</button>
                     </div>
                 </div>
             </Modal>
-            {/*<Modal*/}
-            {/*    isOpen={modalIsOpen}*/}
-            {/*    onRequestClose={closeModal}*/}
-            {/*    contentLabel="Message Modal"*/}
-            {/*>*/}
-            {/*    <h2>{modalMessage}</h2>*/}
-            {/*    <button onClick={closeModal}>Fermer</button>*/}
-            {/*</Modal>*/}
         </section>
     );
 };
