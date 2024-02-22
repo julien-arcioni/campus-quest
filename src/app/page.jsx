@@ -4,7 +4,7 @@ import Testimonial from '../components/Testimonial';
 
 export default function Home() {
     return (
-        <main className="min-h-screen">
+        <main className="min-h-screen dark:bg-gray-800 dark:text-gray-100">
             <Header/>
             <p>Prêt à relever le défi ? Commence ton exploration dès aujourd'hui !</p>
             <div className="mx-auto mt-4">

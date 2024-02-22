@@ -40,7 +40,7 @@ const Geoloc = () => {
     };
 
     return (
-        <main className="min-h-screen">
+        <main className="min-h-screen dark:bg-gray-800 dark:text-gray-100">
             <Header/>
             <div className="mx-auto w-1/6">
                 {renderMessage()}
