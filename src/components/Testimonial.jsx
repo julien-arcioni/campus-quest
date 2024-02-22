@@ -129,9 +129,9 @@ const Testimonial = () => {
 
     return (
         <section className="dark:bg-gray-800 dark:text-gray-100 text-center">
-            <main className="container mx-auto mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <main className="container mx-auto mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                 {quests.map((quest, index) => (
-                    <div key={index} className="max-w-xs rounded-md shadow-md dark:bg-gray-900 dark:text-gray-100"
+                    <div key={index} className="rounded-md shadow-md dark:bg-gray-900 dark:text-gray-100"
                          onClick={() => handleCardClick(quest)}>
                         <div className="flex flex-col justify-between p-6 space-y-8">
                             <div className="space-y-2">

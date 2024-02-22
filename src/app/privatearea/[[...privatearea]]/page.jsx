@@ -10,6 +10,7 @@ const QRCodeReaderPage = () => {
         <main className="min-h-screen">
             <Header/>
             <div className="data-bdd">
+                <h1 className="text-center font-bold text-2xl">Voici vos quêtes disponibles</h1>
                 <Testimonial/>
             </div>
         </main>
