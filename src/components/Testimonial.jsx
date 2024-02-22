@@ -221,8 +221,8 @@ const Testimonial = () => {
                 contentLabel={modalMessage}
                 contentButton={modalTextButton}
             >
-                <div className="flex flex-col justify-between items-center p-10">
-                    <div className="absolute top-2.5 right-3">
+                <div className="flex flex-col justify-between items-center p-10 dark:bg-gray-800-400 dark:text-gray-900">
+                    <div className="absolute top-2.5 right-3 close-block">
                         <button className="dark:bg-violet-400 dark:text-gray-900" onClick={closeModal}>X</button>
                     </div>
                     <div className="mt-4">
