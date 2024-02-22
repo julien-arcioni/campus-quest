@@ -182,7 +182,7 @@ const Testimonial = () => {
                          onClick={() => handleCardClick(quest)}>
                         <div className="flex flex-col justify-between p-6 space-y-8">
                             <div className="space-y-2">
-                                <p className="">Quête 1</p>
+                                <p className="">{quest.name}</p>
                                 <p className="dark:text-gray-100 text-xl">{quest.description}</p>
                             </div>
                             <button type="button"
