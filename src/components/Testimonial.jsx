@@ -1,57 +1,121 @@
 import React, {useEffect, useState} from 'react';
+import ReactDOM from 'react-dom';
+import Modal from 'react-modal';
 import QrReader from 'modern-react-qr-reader';
 import {useGeolocated} from "react-geolocated";
-import Modal from 'react-modal';
+import {useUser} from '@clerk/clerk-react';
+
+const customStyles = {
+    content: {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+        transition: 'opacity 0.2s ease-in-out',
+        opacity: 1,
+    },
+    overlay: {
+        transition: 'opacity 0.2s ease-in-out',
+        opacity: 1,
+    }
+};
+
+Modal.setAppElement('.container');
 
 const Testimonial = () => {
     const [quests, setQuests] = useState([]);
     const [showQrReader, setShowQrReader] = useState(false);
     const [selectedQuest, setSelectedQuest] = useState(null);
 
-    const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [modalMessage, setModalMessage] = useState('');
+    // Récupérer l'utilisateur connecté
+    const {user} = useUser();
+    const userId = user ? user.id : null;
 
+    // Modal
+    // const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
+    const [modalIsOpen, setIsOpen] = React.useState(false);
+
+    function openModal() {
+        setIsOpen(true);
+    }
+
+    function afterOpenModal() {
+        // references are now sync'd and can be accessed.
+        // subtitle.style.color = '#f00';
+    }
+
+    function closeModal() {
+        const modalContent = document.querySelector('.ReactModal__Content');
+        const modalOverlay = document.querySelector('.ReactModal__Overlay');
+
+        modalContent.style.opacity = 0;
+        modalOverlay.style.opacity = 0;
+
+        setTimeout(() => {
+            setIsOpen(false);
+        }, 200);
+    }
+
+
+    // Récupérer les quêtes
     useEffect(() => {
         fetch('/api/quests')
             .then(response => response.json())
             .then(data => setQuests(data));
     }, []);
 
+    // Ouvrir le lecteur de QR code
     const handleCardClick = (quest) => {
         setSelectedQuest(quest);
         setShowQrReader(true);
     };
 
+    // Lire le QR code et traiter les requêtes qui en découlent
     const handleScan = data => {
         if (data) {
-            console.log(data);
-            console.log(selectedQuest.code);
             if (data === selectedQuest.code) {
                 setModalMessage("Code valide");
-                setModalIsOpen(true);
+                openModal();
+
+                // Envoyez une requête POST à l'API
+                fetch('/api/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userId: userId,
+                        questCode: selectedQuest.code
+                    }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data === 1) {
+                            setShowQrReader(false);
+                            setModalMessage('Quête validée avec succès !');
+                            openModal();
+                        } else if (data === 0) {
+                            setShowQrReader(false);
+                            setModalMessage('Oupps vous avez déjà validé cette quête !');
+                            openModal();
+                        } else if (data === -1) {
+                            setShowQrReader(false);
+                            setModalMessage('Aïe ! Une erreur est survenue. Veuillez réessayer plus tard.');
+                            openModal();
+                        }
+                    });
             } else {
-                setModalMessage("Code invalide");
-                setModalIsOpen(true);
+                setShowQrReader(false);
+                setModalMessage('Code invalide !');
+                openModal();
             }
         }
     }
 
-    const closeModal = () => {
-        setModalIsOpen(false);
-    }
-
-    // const validateQuest = (questId) => {
-    //     fetch(`/api/quests/${questId}/validate`, {
-    //         method: 'POST',
-    //     })
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             // Handle the response from the server
-    //         });
-    // }
-
     const [result, setResult] = useState(null);
-
     const campusPosition = {
         // latitude: 49.20091715716765,
         // longitude: -0.3499711869506036
@@ -86,45 +150,29 @@ const Testimonial = () => {
     }
 
     const renderMessage = () => {
+        // Géolocalisation non supportée
         if (!isGeolocationAvailable) {
-            // return <p>Votre navigateur ne supporte pas la géolocalisation</p>;
             return -1;
+            // Géolocalisation n'est pas activée
         } else if (!isGeolocationEnabled) {
-            // return <p>La géolocalisation n'est pas activée</p>;
             return -1;
         } else if (coords) {
             const distance = getDistanceFromLatLonInKm(campusPosition.latitude, campusPosition.longitude, coords.latitude, coords.longitude);
+            // Est sur le campus
             if (distance <= distanceThreshold) {
-                // return <p>Vous êtes sur le campus</p>;
                 return 1;
+                // N'est pas sur le campus
             } else {
-                // return <p>Vous êtes à {distance} mètres du campus</p>;
                 return 0;
             }
         } else {
-            // return <p>En attente des données de géolocalisation…</p>;
+            // Géolocalisation non disponible
             return -1;
         }
     }
 
-    // const handleScan = data => {
-    //     if (data) {
-    //         setResult(data);
-    //     }
-    // }
-
     const handleError = err => {
         console.error(err)
-    }
-
-    const [hydrated, setHydrated] = useState(false);
-
-    useEffect(() => {
-        setHydrated(true);
-    }, []);
-
-    if (!hydrated) {
-        return null;
     }
 
     return (
@@ -139,7 +187,8 @@ const Testimonial = () => {
                                 <p className="dark:text-gray-100">{quest.description}</p>
                             </div>
                             <button type="button"
-                                    className="flex items-center justify-center w-full p-3 font-semibold tracki rounded-md dark:bg-violet-400 dark:text-gray-900">Compléter la quête
+                                    className="flex items-center justify-center w-full p-3 font-semibold tracki rounded-md dark:bg-violet-400 dark:text-gray-900">Compléter
+                                la quête
                             </button>
                         </div>
                     </div>
@@ -157,7 +206,8 @@ const Testimonial = () => {
                                     style={{width: '100%'}}
                                 />
                             ) : renderMessage() === 0 ? (
-                                <p className="text-amber-600">Vous êtes à plus de {distanceThreshold} mètres du campus</p>
+                                <p className="text-amber-600">Vous êtes à plus de {distanceThreshold} mètres du
+                                    campus</p>
                             ) : (
                                 <p>Géolocalisation non disponible ou pas activée</p>
                             )}
@@ -168,12 +218,31 @@ const Testimonial = () => {
             </main>
             <Modal
                 isOpen={modalIsOpen}
+                onAfterOpen={afterOpenModal}
                 onRequestClose={closeModal}
-                contentLabel="Message Modal"
+                style={customStyles}
+                contentLabel={modalMessage}
             >
-                <h2>{modalMessage}</h2>
-                <button onClick={closeModal}>Fermer</button>
+                <div className="flex flex-col justify-between items-center p-10">
+                    <div className="absolute top-2.5 right-3">
+                        <button onClick={closeModal}>X</button>
+                    </div>
+                    <div className="mt-4">
+                        <h2>{modalMessage}</h2>
+                    </div>
+                    <div className="mt-4">
+                        <button className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded" onClick={closeModal}>Je valide une autre quête</button>
+                    </div>
+                </div>
             </Modal>
+            {/*<Modal*/}
+            {/*    isOpen={modalIsOpen}*/}
+            {/*    onRequestClose={closeModal}*/}
+            {/*    contentLabel="Message Modal"*/}
+            {/*>*/}
+            {/*    <h2>{modalMessage}</h2>*/}
+            {/*    <button onClick={closeModal}>Fermer</button>*/}
+            {/*</Modal>*/}
         </section>
     );
 };
