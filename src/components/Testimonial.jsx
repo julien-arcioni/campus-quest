@@ -71,7 +71,11 @@ const Testimonial = () => {
             fetch(`/api/progress?userId=${user.id}`)
                 .then(response => response.json())
                 .then(data => {
-                    setCompletedQuests(data);
+                    if (data) {
+                        setCompletedQuests(data);
+                    } else {
+                        setCompletedQuests([]);
+                    }
                 });
         }
     }, [user]);
@@ -202,11 +206,13 @@ const Testimonial = () => {
                             </div>
                             {completedQuests.includes(quest.code) ? (
                                 <button type="button"
-                                        className="cursor-auto flex items-center justify-center w-full p-3 font-semibold tracki rounded-md dark:bg-violet-400 dark:text-gray-900">Quête déjà complétée
+                                        className="cursor-auto flex items-center justify-center w-full p-3 font-semibold tracki rounded-md dark:bg-violet-400 dark:text-gray-900">Quête
+                                    déjà complétée
                                 </button>
                             ) : (
                                 <button type="button"
-                                        className="flex items-center justify-center w-full p-3 font-semibold tracki rounded-md dark:bg-violet-400 dark:text-gray-900">Compléter la quête
+                                        className="flex items-center justify-center w-full p-3 font-semibold tracki rounded-md dark:bg-violet-400 dark:text-gray-900">Compléter
+                                    la quête
                                 </button>
                             )}
                         </div>
