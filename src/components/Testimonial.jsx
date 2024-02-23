@@ -74,7 +74,8 @@ const Testimonial = () => {
                     if (Array.isArray(data)) {
                         setCompletedQuests(data);
                     } else {
-                        console.error('Erreur : la réponse de l\'API n\'est pas un tableau', data);
+                        // console.error('Erreur : la réponse de l\'API n\'est pas un tableau', data);
+                        setCompletedQuests([]);
                     }
                 });
         }
