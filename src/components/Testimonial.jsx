@@ -71,10 +71,10 @@ const Testimonial = () => {
             fetch(`/api/progress?userId=${user.id}`)
                 .then(response => response.json())
                 .then(data => {
-                    if (data) {
+                    if (Array.isArray(data)) {
                         setCompletedQuests(data);
                     } else {
-                        setCompletedQuests([]);
+                        console.error('Erreur : la réponse de l\'API n\'est pas un tableau', data);
                     }
                 });
         }
@@ -196,9 +196,11 @@ const Testimonial = () => {
         <section className="dark:bg-gray-800 dark:text-gray-100 text-center">
             <main className="container mx-auto mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                 {quests.map((quest, index) => (
-                    <div key={index}
-                         className={`rounded-md shadow-md dark:bg-gray-900 dark:text-gray-100 ${Array.isArray(completedQuests) && completedQuests.includes(quest.code) ? 'opacity-30' : ''}`}
-                         onClick={() => Array.isArray(completedQuests) && !completedQuests.includes(quest.code) && handleCardClick(quest)}>
+                    // <div key={index}
+                    //      className={`rounded-md shadow-md dark:bg-gray-900 dark:text-gray-100 ${Array.isArray(completedQuests) && completedQuests.includes(quest.code) ? 'opacity-30' : ''}`}
+                    //      onClick={() => Array.isArray(completedQuests) && !completedQuests.includes(quest.code) && handleCardClick(quest)}>
+                    <div key={index} className="rounded-md shadow-md dark:bg-gray-900 dark:text-gray-100"
+                         onClick={() => handleCardClick(quest)}>
                         <div className="flex flex-col justify-between p-6 space-y-8">
                             <div className="space-y-2">
                                 <p className="">{quest.name}</p>
@@ -220,7 +222,7 @@ const Testimonial = () => {
                 ))}
                 {showQrReader && (
                     <div className="fixed inset-0 flex items-center justify-center z-50 w-1/2 translate-x-1/2">
-                        <div className="absolute inset-0 bg-transparent"></div>
+                    <div className="absolute inset-0 bg-transparent"></div>
                         <div className="mx-auto w-full md:w-1/2">
                             {renderMessage() === 1 ? (
                                 <QrReader
