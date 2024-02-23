@@ -197,8 +197,8 @@ const Testimonial = () => {
             <main className="container mx-auto mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                 {quests.map((quest, index) => (
                     <div key={index}
-                         className={`rounded-md shadow-md dark:bg-gray-900 dark:text-gray-100 ${completedQuests.includes(quest.code) ? 'opacity-30' : ''}`}
-                         onClick={() => !completedQuests.includes(quest.code) && handleCardClick(quest)}>
+                         className={`rounded-md shadow-md dark:bg-gray-900 dark:text-gray-100 ${Array.isArray(completedQuests) && completedQuests.includes(quest.code) ? 'opacity-30' : ''}`}
+                         onClick={() => Array.isArray(completedQuests) && !completedQuests.includes(quest.code) && handleCardClick(quest)}>
                         <div className="flex flex-col justify-between p-6 space-y-8">
                             <div className="space-y-2">
                                 <p className="">{quest.name}</p>
