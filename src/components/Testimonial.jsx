@@ -28,6 +28,8 @@ const Testimonial = () => {
     const [quests, setQuests] = useState([]);
     const [showQrReader, setShowQrReader] = useState(false);
     const [selectedQuest, setSelectedQuest] = useState(null);
+    const [completedQuests, setCompletedQuests] = useState([]);
+
 
     // Récupérer l'utilisateur connecté
     const {user} = useUser();
@@ -62,8 +64,24 @@ const Testimonial = () => {
             .then(data => setQuests(data));
     }, []);
 
+
+    // Récupérer les quêtes complétées par l'utilisateur
+    useEffect(() => {
+        if (user) {
+            fetch(`/api/progress?userId=${user.id}`)
+                .then(response => response.json())
+                .then(data => {
+                    setCompletedQuests(data);
+                });
+        }
+    }, [user]);
+
     // Ouvrir le lecteur de QR code
     const handleCardClick = (quest) => {
+        if (completedQuests.includes(quest.code)) {
+            return;
+        }
+
         setSelectedQuest(quest);
         setShowQrReader(true);
     };
@@ -121,19 +139,15 @@ const Testimonial = () => {
         latitude: 49.200834747727214,
         longitude: -0.35030825744906413
     };
-
     const positionOptions = {
         enableHighAccuracy: true,
         timeout: 10000
     };
-
     const {coords, isGeolocationAvailable, isGeolocationEnabled} = useGeolocated(positionOptions);
     const distanceThreshold = 1000; // en mètres
-
     const deg2rad = (deg) => {
         return deg * Math.PI / 180;
     }
-
     const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
         const R = 6371e3; // Rayon de la terre en mètres
         const dLat = deg2rad(lat2 - lat1);
@@ -178,17 +192,23 @@ const Testimonial = () => {
         <section className="dark:bg-gray-800 dark:text-gray-100 text-center">
             <main className="container mx-auto mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                 {quests.map((quest, index) => (
-                    <div key={index} className="rounded-md shadow-md dark:bg-gray-900 dark:text-gray-100"
-                         onClick={() => handleCardClick(quest)}>
+                    <div key={index}
+                         className={`rounded-md shadow-md dark:bg-gray-900 dark:text-gray-100 ${completedQuests.includes(quest.code) ? 'opacity-30' : ''}`}
+                         onClick={() => !completedQuests.includes(quest.code) && handleCardClick(quest)}>
                         <div className="flex flex-col justify-between p-6 space-y-8">
                             <div className="space-y-2">
                                 <p className="">{quest.name}</p>
                                 <p className="dark:text-gray-100 text-xl">{quest.description}</p>
                             </div>
-                            <button type="button"
-                                    className="flex items-center justify-center w-full p-3 font-semibold tracki rounded-md dark:bg-violet-400 dark:text-gray-900">Compléter
-                                la quête
-                            </button>
+                            {completedQuests.includes(quest.code) ? (
+                                <button type="button"
+                                        className="cursor-auto flex items-center justify-center w-full p-3 font-semibold tracki rounded-md dark:bg-violet-400 dark:text-gray-900">Quête déjà complétée
+                                </button>
+                            ) : (
+                                <button type="button"
+                                        className="flex items-center justify-center w-full p-3 font-semibold tracki rounded-md dark:bg-violet-400 dark:text-gray-900">Compléter la quête
+                                </button>
+                            )}
                         </div>
                     </div>
                 ))}
@@ -205,7 +225,8 @@ const Testimonial = () => {
                                     style={{width: '100%'}}
                                 />
                             ) : renderMessage() === 0 ? (
-                                <p className="text-amber-600">Vous êtes à plus de {distanceThreshold} mètres du campus</p>
+                                <p className="text-amber-600">Vous êtes à plus de {distanceThreshold} mètres du
+                                    campus</p>
                             ) : (
                                 <p>Géolocalisation non disponible ou pas activée</p>
                             )}
@@ -221,7 +242,8 @@ const Testimonial = () => {
                 contentLabel={modalMessage}
                 contentButton={modalTextButton}
             >
-                <div className="flex flex-col justify-between items-center p-10 dark:bg-gray-800-400 dark:text-gray-900">
+                <div
+                    className="flex flex-col justify-between items-center p-10 dark:bg-gray-800-400 dark:text-gray-900">
                     <div className="absolute top-2.5 right-3 close-block">
                         <button className="dark:bg-violet-400 dark:text-gray-900" onClick={closeModal}>X</button>
                     </div>
@@ -229,12 +251,13 @@ const Testimonial = () => {
                         <h2>{modalMessage}</h2>
                     </div>
                     <div className="mt-4">
-                        <button className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded dark:bg-violet-400 dark:text-gray-900" onClick={closeModal}>{modalTextButton}</button>
+                        <button
+                            className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded dark:bg-violet-400 dark:text-gray-900"
+                            onClick={closeModal}>{modalTextButton}</button>
                     </div>
                 </div>
             </Modal>
         </section>
     );
 };
-
 export default Testimonial;

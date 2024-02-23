@@ -20,7 +20,6 @@ export async function POST(req) {
         } else {
             // l'utilisateur existe déjà
             if (user.quests.includes(questCode)) {
-                // Si le questCode existe déjà dans le tableau quests de l'utilisateur
                 return NextResponse.json(0); // Quest déjà validée
             } else {
                 await collection.updateOne({ id: userId }, { $push: { quests: questCode } });
