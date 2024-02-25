@@ -116,6 +116,8 @@ const Testimonial = () => {
                             setModalMessage('Quête validée avec succès !');
                             setModalTextButton('Je continue mes quêtes');
                             openModal();
+                            setCompletedQuests(prevCompletedQuests => [...prevCompletedQuests, selectedQuest.code]);
+
                         } else if (data === 0) {
                             setShowQrReader(false);
                             setModalMessage('Oupps vous avez déjà validé cette quête !');
