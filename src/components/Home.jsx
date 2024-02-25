@@ -5,7 +5,7 @@ import {useEffect} from 'react';
 const HomeComponent = () => {
 
     return (
-        <main className="min-h-screen dark:bg-gray-800 dark:text-gray-100">
+        <main className="dark:bg-gray-800 dark:text-gray-100">
             <section>
                 <div className="dark:bg-violet-400">
                     <div
