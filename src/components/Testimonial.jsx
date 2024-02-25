@@ -26,6 +26,7 @@ Modal.setAppElement('body');
 
 const Testimonial = () => {
     const [quests, setQuests] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [showQrReader, setShowQrReader] = useState(false);
     const [selectedQuest, setSelectedQuest] = useState(null);
     const [completedQuests, setCompletedQuests] = useState([]);
@@ -61,8 +62,11 @@ const Testimonial = () => {
     useEffect(() => {
         fetch('/api/quests')
             .then(response => response.json())
-            .then(data => setQuests(data));
-    }, []);
+            .then(data => {
+                setQuests(data);
+                setIsLoading(false);
+            });
+        }, []);
 
 
     // Récupérer les quêtes complétées par l'utilisateur
@@ -197,7 +201,14 @@ const Testimonial = () => {
 
     return (
         <section className="dark:bg-gray-800 dark:text-gray-100 text-center">
-            <main className="container mx-auto mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            {isLoading ? (
+                    <div className="flex items-center justify-center space-x-2 h-lvh">
+                        <div
+                            className="w-16 h-16 border-4 border-dashed rounded-full animate-spin dark:border-violet-400">
+                        </div>
+                    </div>
+                ) :
+                <main className="container mx-auto mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                 {quests.map((quest, index) => (
                     <div key={index}
                          className={`rounded-md shadow-md dark:bg-gray-900 dark:text-gray-100 ${Array.isArray(completedQuests) && completedQuests.includes(quest.code) ? 'opacity-30' : ''}`}
@@ -246,7 +257,8 @@ const Testimonial = () => {
                     </div>
                 )}
             </main>
-            <Modal
+                }
+                <Modal
                 isOpen={modalIsOpen}
                 onRequestClose={closeModal}
                 style={customStyles}
