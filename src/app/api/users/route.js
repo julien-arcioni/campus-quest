@@ -9,9 +9,8 @@ export async function POST(req) {
         body += chunk;
     }
 
-    // Check if body is a sequence of ASCII codes
+    // Convertir les codes ASCII en caractères si nécessaire
     if (/^\d+(,\d+)*$/.test(body)) {
-        // Convert ASCII codes to string
         body = body.split(',').map(code => String.fromCharCode(code)).join('');
     }
 
