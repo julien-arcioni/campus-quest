@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import QrReader from 'modern-react-qr-reader';
 import {useGeolocated} from "react-geolocated";
 import Testimonial from "@/components/Testimonial";
+import BanniereContact from "@/components/BanniereContact";
 
 const QRCodeReaderPage = () => {
     return (
@@ -13,6 +14,7 @@ const QRCodeReaderPage = () => {
                 <h1 className="text-center font-bold text-2xl">Voici vos quêtes disponibles</h1>
                 <Testimonial/>
             </div>
+            <BanniereContact/>
         </main>
     );
 }
