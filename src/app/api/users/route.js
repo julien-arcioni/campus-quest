@@ -8,6 +8,15 @@ export async function POST(req) {
     for await (const chunk of req.body) {
         body += chunk;
     }
+
+    let parsedBody;
+    try {
+        parsedBody = JSON.parse(body);
+    } catch (error) {
+        console.error('Invalid JSON:', body);
+        return NextResponse.json({ error: 'Invalid JSON in request body' });
+    }
+
     const { userId, questCode } = JSON.parse(body);
     const collection = db.collection('users');
     const user = await collection.findOne({ id: userId });
