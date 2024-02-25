@@ -22,7 +22,7 @@ const customStyles = {
     }
 };
 
-Modal.setAppElement('.container');
+Modal.setAppElement('body');
 
 const Testimonial = () => {
     const [quests, setQuests] = useState([]);
