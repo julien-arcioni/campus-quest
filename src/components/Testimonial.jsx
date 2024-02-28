@@ -93,7 +93,7 @@ const Testimonial = () => {
 
             // Envoyez chaque code QR à la base de données
             for (const qrCode of scannedQRCodes) {
-                if (qrCode) { // Ajoutez cette vérification
+                if (qrCode && user && !completedQuests.includes(qrCode)) {
                     // Envoyez une requête POST à l'API
                     fetch('/api/users', {
                         method: 'POST',
@@ -101,7 +101,7 @@ const Testimonial = () => {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            userId: userId,
+                            userId: user.id,
                             questCode: qrCode
                         }),
                     })
@@ -109,10 +109,16 @@ const Testimonial = () => {
                         .then(data => {
                             if (data === 1) {
                                 setCompletedQuests(prevCompletedQuests => [...prevCompletedQuests, qrCode]);
+                                setModalMessage('Quête(s) validées en hors ligne envoyées à la BDD');
+                                setModalTextButton('Je continue mes quêtes');
+                                openModal();
+                                console.log(user.id, qrCode);
                             } else if (data === 0) {
                                 console.log('Oupps vous avez déjà validé cette quête !');
+                                console.log(user.id, qrCode);
                             } else if (data === -1) {
                                 console.log('Aïe ! Une erreur est survenue. Veuillez réessayer plus tard.');
+                                console.log(user.id, qrCode);
                             }
                         });
                 }
@@ -121,7 +127,7 @@ const Testimonial = () => {
             // Supprimez les codes QR de localForage
             await localForage.removeItem('scannedQRCodes');
         });
-    }, []);
+    }, [user, completedQuests]);
 
     // Ouvrir le lecteur de QR code
     const handleCardClick = (quest) => {
