@@ -4,6 +4,7 @@ import Modal from 'react-modal';
 import QrReader from 'modern-react-qr-reader';
 import {useGeolocated} from "react-geolocated";
 import {useUser} from '@clerk/clerk-react';
+import localForage from "localforage";
 
 const customStyles = {
     content: {
@@ -85,6 +86,43 @@ const Testimonial = () => {
         }
     }, [user]);
 
+    useEffect(() => {
+        window.addEventListener('online', async () => {
+            // L'utilisateur est revenu en ligne, récupérez les codes QR de localForage
+            const scannedQRCodes = await localForage.getItem('scannedQRCodes') || [];
+
+            // Envoyez chaque code QR à la base de données
+            for (const qrCode of scannedQRCodes) {
+                if (qrCode) { // Ajoutez cette vérification
+                    // Envoyez une requête POST à l'API
+                    fetch('/api/users', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            userId: userId,
+                            questCode: qrCode
+                        }),
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data === 1) {
+                                setCompletedQuests(prevCompletedQuests => [...prevCompletedQuests, qrCode]);
+                            } else if (data === 0) {
+                                console.log('Oupps vous avez déjà validé cette quête !');
+                            } else if (data === -1) {
+                                console.log('Aïe ! Une erreur est survenue. Veuillez réessayer plus tard.');
+                            }
+                        });
+                }
+            }
+
+            // Supprimez les codes QR de localForage
+            await localForage.removeItem('scannedQRCodes');
+        });
+    }, []);
+
     // Ouvrir le lecteur de QR code
     const handleCardClick = (quest) => {
         if (completedQuests.includes(quest.code)) {
@@ -96,9 +134,10 @@ const Testimonial = () => {
     };
 
     // Lire le QR code et traiter les requêtes qui en découlent
-    const handleScan = data => {
+    const handleScan = async data => {
         if (data) {
-            if (data === selectedQuest.code) {
+            if (navigator.onLine) {
+                // L'utilisateur est en ligne, envoyez le code QR à la base de données
                 setShowQrReader(false);
                 setModalMessage("Code valide, en cours d'enregistrement...");
                 setModalTextButton('Je continue mes quêtes');
@@ -137,9 +176,11 @@ const Testimonial = () => {
                         }
                     });
             } else {
+                // L'utilisateur est hors ligne, stockez le code QR dans localForage
+                await localForage.setItem('scannedQRCodes', [...await localForage.getItem('scannedQRCodes') || [], data]);
                 setShowQrReader(false);
-                setModalMessage('Code invalide !');
-                setModalTextButton('Je vérifie mon QR code')
+                setModalMessage('Vous êtes hors ligne. Le code QR a été enregistré localement et sera envoyé à la base de données une fois que vous serez en ligne.');
+                setModalTextButton('Je continue mes quêtes');
                 openModal();
             }
         }
