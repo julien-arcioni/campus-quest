@@ -99,6 +99,7 @@ const Testimonial = () => {
     const handleScan = data => {
         if (data) {
             if (data === selectedQuest.code) {
+                setShowQrReader(false);
                 setModalMessage("Code valide, en cours d'enregistrement...");
                 setModalTextButton('Je continue mes quêtes');
                 openModal();
@@ -235,31 +236,30 @@ const Testimonial = () => {
                         </div>
                     </div>
                 ))}
-                {showQrReader && (
-                    <div className="fixed inset-0 flex items-center justify-center z-50 w-1/2 translate-x-1/2">
-                    <div className="absolute inset-0 bg-transparent"></div>
-                        <div className="mx-auto w-full md:w-1/2">
-                            {renderMessage() === 1 ? (
-                                <QrReader
-                                    delay={300}
-                                    facingMode={"environment"}
-                                    onError={handleError}
-                                    onScan={handleScan}
-                                    style={{width: '100%'}}
-                                />
-                            ) : renderMessage() === 0 ? (
-                                <p className="text-amber-600">Vous êtes à plus de {distanceThreshold} mètres du
-                                    campus</p>
-                            ) : (
-                                <p>Géolocalisation non disponible ou pas activée</p>
-                            )}
-                            <p className="text-white">{result}</p>
+                    {showQrReader && (
+                        <div className="fixed inset-0 flex items-center justify-center z-50">
+                            <div className="bg-white rounded-lg p-10 relative mx-2 md:mx-auto w-full md:w-1/3">
+                                <button className="absolute top-0 right-1 text-lg text-black" onClick={() => setShowQrReader(false)}>Fermer</button>
+                                {renderMessage() === 1 ? (
+                                    <QrReader
+                                        delay={300}
+                                        facingMode={"environment"}
+                                        onError={handleError}
+                                        onScan={handleScan}
+                                        style={{width: '100%'}}
+                                    />
+                                ) : renderMessage() === 0 ? (
+                                    <p className="text-amber-600">Vous êtes à plus de {distanceThreshold} mètres du campus</p>
+                                ) : (
+                                    <p>Géolocalisation non disponible ou pas activée</p>
+                                )}
+                                <p className="text-black">{result}</p>
+                            </div>
                         </div>
-                    </div>
-                )}
-            </main>
-                }
-                <Modal
+                    )}
+                </main>
+            }
+            <Modal
                 isOpen={modalIsOpen}
                 onRequestClose={closeModal}
                 style={customStyles}
@@ -267,7 +267,7 @@ const Testimonial = () => {
                 contentButton={modalTextButton}
             >
                 <div
-                    className="flex flex-col justify-between items-center p-10 dark:bg-gray-800-400 dark:text-gray-900">
+                    className="flex flex-col justify-between items-center z-50 p-10 dark:bg-gray-800-400 dark:text-gray-900">
                     <div className="absolute top-2.5 right-3 close-block">
                         <button className="dark:bg-violet-400 dark:text-gray-900" onClick={closeModal}>X</button>
                     </div>
