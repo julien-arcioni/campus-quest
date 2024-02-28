@@ -99,7 +99,8 @@ const Testimonial = () => {
     const handleScan = data => {
         if (data) {
             if (data === selectedQuest.code) {
-                setModalMessage("Code valide");
+                setModalMessage("Code valide, en cours d'enregistrement...");
+                setModalTextButton('Je continue mes quêtes');
                 openModal();
 
                 // Envoyez une requête POST à l'API
