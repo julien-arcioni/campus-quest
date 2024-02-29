@@ -222,10 +222,8 @@ const Testimonial = () => {
 
     const [result, setResult] = useState(null);
     const campusPosition = {
-        latitude: 49.17821482096826,
-        longitude: -0.38856331144122436
-        // latitude: 49.200834747727214,
-        // longitude: -0.35030825744906413
+        latitude: 49.200834747727214,
+        longitude: -0.35030825744906413
     };
     const positionOptions = {
         enableHighAccuracy: true,
