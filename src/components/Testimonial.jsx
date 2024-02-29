@@ -148,7 +148,8 @@ const Testimonial = () => {
                         })
                 .catch(error => {
                         console.error('Une erreur est survenue lors de l\'envoi des données à la base de données :', error);
-                    });
+                    console.error('Détails de l\'erreur :', JSON.stringify(error, null, 2));
+                });
                 }
             }
 
