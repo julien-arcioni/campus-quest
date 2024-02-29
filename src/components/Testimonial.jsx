@@ -105,20 +105,26 @@ const Testimonial = () => {
                             questCode: qrCode
                         }),
                     })
-                        .then(response => response.json())
+                    console.log(user.id, qrCode)
+
+                .then(response => response.json())
                         .then(data => {
                             if (data === 1) {
                                 setCompletedQuests(prevCompletedQuests => [...prevCompletedQuests, qrCode]);
                                 setModalMessage('Quête(s) validées en hors ligne envoyées à la BDD');
                                 setModalTextButton('Je continue mes quêtes');
                                 openModal();
-                                console.log(user.id, qrCode);
+                                console.log('Les quetes ont étéd envoyées à la BDD pour : ' . user.id, qrCode);
                             } else if (data === 0) {
                                 console.log('Oupps vous avez déjà validé cette quête !');
-                                console.log(user.id, qrCode);
                             } else if (data === -1) {
                                 console.log('Aïe ! Une erreur est survenue. Veuillez réessayer plus tard.');
-                                console.log(user.id, qrCode);
+                                console.log('Aïe ! Une erreur est survenue pour : ' . user.id, qrCode);
+                            } else {
+                                setModalMessage('PB');
+                                setModalTextButton('PBBBB');
+                                openModal();
+                                console.error('Erreur : la réponse de l\'API n\'est pas valide', data);
                             }
                         });
                 }
