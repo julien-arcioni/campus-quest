@@ -19,10 +19,10 @@ export async function POST(req) {
         parsedBody = JSON.parse(body);
     } catch (error) {
         console.error('Invalid JSON:', body);
-        return NextResponse.json({ error: 'Invalid JSON in request body' });
+        return NextResponse.json({ error: 'Invalid JSON in request body', body });
     }
 
-    const { userId, questCode } = JSON.parse(body);
+    const { userId, questCode } = parsedBody;
     const collection = db.collection('users');
     const user = await collection.findOne({ id: userId });
 
@@ -41,7 +41,7 @@ export async function POST(req) {
             }
         }
     } catch (error) {
-        console.error(error);
+        console.error('Une erreur est survenue lors de l\'interaction avec la base de données :', error);
         return NextResponse.json(-1); // Erreur
     }
 }
