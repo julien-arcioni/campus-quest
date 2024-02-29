@@ -74,16 +74,23 @@ const Testimonial = () => {
     useEffect(() => {
         if (user) {
             fetch(`/api/progress?userId=${user.id}`)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (Array.isArray(data)) {
                         setCompletedQuests(data);
                     } else {
-                        // console.error('Erreur : la réponse de l\'API n\'est pas un tableau', data);
+                        console.error('Erreur : la réponse de l\'API n\'est pas un tableau', data);
                         setCompletedQuests([]);
                     }
-                });
-        }
+                })
+                .catch(error => {
+                    console.error('Une erreur est survenue lors de la récupération de la progression de l\'utilisateur :', error);
+                });        }
     }, [user]);
 
     useEffect(() => {
