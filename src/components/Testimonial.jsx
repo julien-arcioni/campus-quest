@@ -88,6 +88,8 @@ const Testimonial = () => {
 
     useEffect(() => {
         window.addEventListener('online', async () => {
+            event.preventDefault();
+
             // L'utilisateur est revenu en ligne, récupérez les codes QR de localForage
             const scannedQRCodes = await localForage.getItem('scannedQRCodes') || [];
 
@@ -105,8 +107,6 @@ const Testimonial = () => {
                             questCode: qrCode
                         }),
                     })
-                    console.log(user.id, qrCode)
-
                 .then(response => response.json())
                         .then(data => {
                             if (data === 1) {
@@ -127,6 +127,9 @@ const Testimonial = () => {
                                 console.error('Erreur : la réponse de l\'API n\'est pas valide', data);
                             }
                         });
+                .catch(error => {
+                        console.error('Une erreur est survenue lors de l\'envoi des données à la base de données :', error);
+                    });
                 }
             }
 
