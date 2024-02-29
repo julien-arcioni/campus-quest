@@ -170,62 +170,62 @@ const Testimonial = () => {
 
     // Lire le QR code et traiter les requêtes qui en découlent
     const handleScan = async data => {
-        // if (data) {
-        //     if (data !== selectedQuest.code) {
-        //         setShowQrReader(false);
-        //         setModalMessage('Le code QR scanné ne correspond pas à la quête sélectionnée.');
-        //         setModalTextButton('Je scanne à nouveau');
-        //         openModal();
-        //         return;
-        //     }
-        //     if (navigator.onLine) {
-        //         // L'utilisateur est en ligne, envoyez le code QR à la base de données
-        //         setShowQrReader(false);
-        //         setModalMessage("Code valide, en cours d'enregistrement...");
-        //         setModalTextButton('Je continue mes quêtes');
-        //         openModal();
-        //
-        //         // Envoyez une requête POST à l'API
-        //         fetch('/api/users', {
-        //             method: 'POST',
-        //             headers: {
-        //                 'Content-Type': 'application/json',
-        //             },
-        //             body: JSON.stringify({
-        //                 userId: userId,
-        //                 questCode: selectedQuest.code
-        //             }),
-        //         })
-        //             .then(response => response.json())
-        //             .then(data => {
-        //                 if (data === 1) {
-        //                     setShowQrReader(false);
-        //                     setModalMessage('Quête validée avec succès !');
-        //                     setModalTextButton('Je continue mes quêtes');
-        //                     openModal();
-        //                     setCompletedQuests(prevCompletedQuests => [...prevCompletedQuests, selectedQuest.code]);
-        //
-        //                 } else if (data === 0) {
-        //                     setShowQrReader(false);
-        //                     setModalMessage('Oupps vous avez déjà validé cette quête !');
-        //                     setModalTextButton('Je valide une quête différente');
-        //                     openModal();
-        //                 } else if (data === -1) {
-        //                     setShowQrReader(false);
-        //                     setModalMessage('Aïe ! Une erreur est survenue. Veuillez réessayer plus tard.');
-        //                     setModalTextButton('Je réessaye')
-        //                     openModal();
-        //                 }
-        //             });
-        //     } else {
-        //         // L'utilisateur est hors ligne, stockez le code QR dans localForage
-        //         await localForage.setItem('scannedQRCodes', [...await localForage.getItem('scannedQRCodes') || [], data]);
-        //         setShowQrReader(false);
-        //         setModalMessage('Vous êtes hors ligne. Le code QR a été enregistré localement et sera envoyé à la base de données une fois que vous serez en ligne.');
-        //         setModalTextButton('Je continue mes quêtes');
-        //         openModal();
-        //     }
-        // }
+        if (data) {
+            if (data !== selectedQuest.code) {
+                setShowQrReader(false);
+                setModalMessage('Le code QR scanné ne correspond pas à la quête sélectionnée.');
+                setModalTextButton('Je scanne à nouveau');
+                openModal();
+                return;
+            }
+            if (navigator.onLine) {
+                // L'utilisateur est en ligne, envoyez le code QR à la base de données
+                setShowQrReader(false);
+                setModalMessage("Code valide, en cours d'enregistrement...");
+                setModalTextButton('Je continue mes quêtes');
+                openModal();
+
+                // Envoyez une requête POST à l'API
+                fetch('/api/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userId: userId,
+                        questCode: selectedQuest.code
+                    }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data === 1) {
+                            setShowQrReader(false);
+                            setModalMessage('Quête validée avec succès !');
+                            setModalTextButton('Je continue mes quêtes');
+                            openModal();
+                            setCompletedQuests(prevCompletedQuests => [...prevCompletedQuests, selectedQuest.code]);
+
+                        } else if (data === 0) {
+                            setShowQrReader(false);
+                            setModalMessage('Oupps vous avez déjà validé cette quête !');
+                            setModalTextButton('Je valide une quête différente');
+                            openModal();
+                        } else if (data === -1) {
+                            setShowQrReader(false);
+                            setModalMessage('Aïe ! Une erreur est survenue. Veuillez réessayer plus tard.');
+                            setModalTextButton('Je réessaye')
+                            openModal();
+                        }
+                    });
+            } else {
+                // L'utilisateur est hors ligne, stockez le code QR dans localForage
+                await localForage.setItem('scannedQRCodes', [...await localForage.getItem('scannedQRCodes') || [], data]);
+                setShowQrReader(false);
+                setModalMessage('Vous êtes hors ligne. Le code QR a été enregistré localement et sera envoyé à la base de données une fois que vous serez en ligne.');
+                setModalTextButton('Je continue mes quêtes');
+                openModal();
+            }
+        }
     }
 
     const [result, setResult] = useState(null);
