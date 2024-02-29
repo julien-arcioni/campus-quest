@@ -298,7 +298,7 @@ const Testimonial = () => {
                                 ) : renderMessage() === 0 ? (
                                     <p className="text-amber-600">Vous êtes à plus de {distanceThreshold} mètres du campus</p>
                                 ) : (
-                                    <p>Géolocalisation non disponible ou pas activée</p>
+                                    <p className="text-amber-600">Géolocalisation non disponible ou pas activée</p>
                                 )}
                                 <p className="text-black">{result}</p>
                             </div>
