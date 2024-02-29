@@ -8,7 +8,7 @@ import BanniereContact from "@/components/BanniereContact";
 
 const QRCodeReaderPage = () => {
     return (
-        <main className="min-h-screen">
+        <main className="min-h-screen dark:bg-gray-800 dark:text-gray-100">
             <Header/>
             <div className="data-bdd dark:bg-gray-800 dark:text-gray-100">
                 <h1 className="text-center font-bold text-2xl">Voici vos quêtes disponibles</h1>

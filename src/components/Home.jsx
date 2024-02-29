@@ -3,9 +3,15 @@ import {useUser} from '@clerk/clerk-react';
 import {useEffect} from 'react';
 
 const HomeComponent = () => {
+    useEffect(() => {
+        document.body.classList.add('home');
+        return () => {
+            document.body.classList.remove('home');
+        };
+    }, []);
 
     return (
-        <main className="dark:bg-gray-800 dark:text-gray-100">
+        <main className="home dark:bg-gray-800 dark:text-gray-100 bg-gradient-to-r from-green-200 to-teal-200 text-gray-800 backdrop-blur-md">
             <section>
                 <div className="dark:bg-violet-400">
                     <div
@@ -21,7 +27,7 @@ const HomeComponent = () => {
                                     className="px-8 py-3 m-2 text-lg font-semibold rounded dark:bg-gray-800 dark:text-gray-50">Commencer
                             </a>
                             <a href="/quest"
-                                    className="px-8 py-3 m-2 text-lg border rounded dark:border-gray-700 dark:text-gray-900">Me géolocaliser
+                                    className="px-8 py-3 m-2 text-lg rounded dark:border dark:text-gray-900">Me géolocaliser
                             </a>
                         </div>
                     </div>
