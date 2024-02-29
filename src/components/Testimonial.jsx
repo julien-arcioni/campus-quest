@@ -107,6 +107,7 @@ const Testimonial = () => {
             // L'utilisateur est revenu en ligne, récupérez les codes QR de localForage
             const scannedQRCodes = await localForage.getItem('scannedQRCodes') || [];
 
+            console.log('revenu en ligne qr code en tmp : ', scannedQRCodes);
             // Envoyez chaque code QR à la base de données
             for (const qrCode of scannedQRCodes) {
                 if (qrCode && user && !completedQuests.includes(qrCode)) {
@@ -133,7 +134,6 @@ const Testimonial = () => {
                                 setModalMessage('Quête(s) validées en hors ligne envoyées à la BDD');
                                 setModalTextButton('Je continue mes quêtes');
                                 openModal();
-                                console.log('Les quetes ont étéd envoyées à la BDD pour : ' . user.id, qrCode);
                             } else if (data === 0) {
                                 console.log('Oupps vous avez déjà validé cette quête !');
                             } else if (data === -1) {
