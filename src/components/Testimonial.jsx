@@ -142,6 +142,13 @@ const Testimonial = () => {
     // Lire le QR code et traiter les requêtes qui en découlent
     const handleScan = async data => {
         if (data) {
+            if (data !== selectedQuest.code) {
+                setShowQrReader(false);
+                setModalMessage('Le code QR scanné ne correspond pas à la quête sélectionnée.');
+                setModalTextButton('Je scanne à nouveau');
+                openModal();
+                return;
+            }
             if (navigator.onLine) {
                 // L'utilisateur est en ligne, envoyez le code QR à la base de données
                 setShowQrReader(false);
@@ -260,7 +267,7 @@ const Testimonial = () => {
                 <main className="container mx-auto mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                 {quests.map((quest, index) => (
                     <div key={index}
-                         className={`rounded-md card shadow-md dark:bg-gray-900 dark:text-gray-100 ${Array.isArray(completedQuests) && completedQuests.includes(quest.code) ? 'opacity-30' : ''}`}
+                         className={`rounded-md card jshadow-md dark:bg-gray-900 dark:text-gray-100 ${Array.isArray(completedQuests) && completedQuests.includes(quest.code) ? 'opacity-30' : ''}`}
                          onClick={() => Array.isArray(completedQuests) && !completedQuests.includes(quest.code) && handleCardClick(quest)}>
                     {/*<div key={index} className="rounded-md shadow-md dark:bg-gray-900 dark:text-gray-100"*/}
                     {/*     onClick={() => handleCardClick(quest)}>*/}
