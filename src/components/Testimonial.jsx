@@ -69,9 +69,16 @@ const Testimonial = () => {
             });
         }, []);
 
+    useEffect(() => {
+        if (user) {
+            localStorage.setItem('userId', user.id);
+        }
+    }, [user]);
 
     // Récupérer les quêtes complétées par l'utilisateur
     useEffect(() => {
+        const userId = localStorage.getItem('userId');
+        console.log('userId local', userId);
         if (user) {
             fetch(`/api/progress?userId=${user.id}`)
                 .then(response => {
